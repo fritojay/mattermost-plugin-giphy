@@ -56,7 +56,7 @@ func (p *Plugin) executeCommandGif(command string) (*model.CommandResponse, *mod
 		return nil, err
 	}
 
-	text := generateGifCaption(keywords, gifURL, p.gifProvider.getAttributionMessage())
+	text := keywords + " " + gifURL
 	return &model.CommandResponse{ResponseType: model.COMMAND_RESPONSE_TYPE_IN_CHANNEL, Text: text}, nil
 }
 
@@ -79,10 +79,6 @@ func (p *Plugin) executeCommandGifShuffle(command string, args *model.CommandArg
 	return &model.CommandResponse{}, nil
 }
 
-func generateGifCaption(keywords, gifURL, attributionMessage string) string {
-	return fmt.Sprintf("**/gif [%s](%s)** \n\n*%s* \n\n![GIF for '%s'](%s)", keywords, gifURL, attributionMessage, keywords, gifURL)
-}
-
 func (p *Plugin) generateGifPost(userId, keywords, gifURL, channelId, rootId, attributionMessage string) *model.Post {
 	return &model.Post{
 		Message:   generateGifCaption(keywords, gifURL, attributionMessage),
@@ -90,6 +86,10 @@ func (p *Plugin) generateGifPost(userId, keywords, gifURL, channelId, rootId, at
 		ChannelId: channelId,
 		RootId:    rootId,
 	}
+}
+
+func generateGifCaption(keywords string, gifURL string, attributionMessage string) string {
+	return keywords + " " + gifURL
 }
 
 func generateShufflePostAttachments(keywords, gifURL, cursor, rootId string) []*model.SlackAttachment {
